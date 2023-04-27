@@ -27,7 +27,8 @@ public class AcessoService {
      return acessoRepository.findById(id);
    }
 
-  public void delete(Integer id){
+  public void apagar(Integer id){
+
         acessoRepository.deleteById(id);
   }
 
