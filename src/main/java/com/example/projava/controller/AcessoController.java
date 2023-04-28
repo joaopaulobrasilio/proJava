@@ -1,10 +1,14 @@
 package com.example.projava.controller;
 
+import com.example.projava.exceptionhandler.AcessoNotFoundException;
 import com.example.projava.model.AcessoModel;
 import com.example.projava.repository.AcessoRepository;
 import com.example.projava.service.AcessoService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -27,9 +31,9 @@ public class AcessoController {
 
 
     @PostMapping("/salvar")
-    public AcessoModel create(@RequestBody AcessoModel acessoModel) {
-
-        return acessoService.savar(acessoModel);
+    public ResponseEntity<AcessoModel> create(@Valid @RequestBody AcessoModel acessoModel) throws Exception{
+      AcessoModel newAcesso = acessoService.savar(acessoModel);
+        return new ResponseEntity<>(newAcesso, HttpStatus.CREATED);
     }
 
     @GetMapping
@@ -39,9 +43,10 @@ public class AcessoController {
     }
 
     @GetMapping(path = "/{id}")
-    public ResponseEntity<AcessoModel> pegarPorId(@PathVariable Integer id) {
+    public ResponseEntity<AcessoModel> pegarPorId(@PathVariable Integer id ) {
         return acessoService.findById(id).map(record ->
-                ResponseEntity.ok().body(record)).orElse(ResponseEntity.notFound().build());
+                ResponseEntity.ok().body(record)).orElseThrow(
+                        ()-> new AcessoNotFoundException());
 
     }
 
@@ -50,7 +55,7 @@ public class AcessoController {
         acessoService.findById(id).map(record -> {
             acessoService.apagar(id);
             return ResponseEntity.ok().build();
-        }).orElse(ResponseEntity.notFound().build());
+        }).orElseThrow(()-> new AcessoNotFoundException());
 
     }
     @PutMapping("/{id}")
