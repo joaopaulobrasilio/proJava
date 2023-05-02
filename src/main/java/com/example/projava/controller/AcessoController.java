@@ -17,6 +17,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/acessos")
 public class AcessoController {
+    public static final String ID = "/{id}";
     @Autowired
     private AcessoService acessoService;
     private final AcessoRepository acessoRepository;
@@ -42,7 +43,7 @@ public class AcessoController {
         return acessoService.findAll();
     }
 
-    @GetMapping(path = "/{id}")
+    @GetMapping(path = ID)
     public ResponseEntity<AcessoModel> pegarPorId(@PathVariable Integer id ) {
         return acessoService.findById(id).map(record ->
                 ResponseEntity.ok().body(record)).orElseThrow(
@@ -50,7 +51,7 @@ public class AcessoController {
 
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping(path = ID)
     public void deletar(@PathVariable Integer id) {
         acessoService.findById(id).map(record -> {
             acessoService.apagar(id);
@@ -58,13 +59,8 @@ public class AcessoController {
         }).orElseThrow(()-> new AcessoNotFoundException());
 
     }
-    @PutMapping("/{id}")
-    public ResponseEntity<AcessoModel> atualizar(@PathVariable Integer id , @RequestBody AcessoModel model){
-        return acessoService.findById(id).map( record ->{
-            record.setLogin(model.getLogin());
-            record.setSenha(model.getSenha());
-           AcessoModel guard = acessoService.savar(record);
-           return ResponseEntity.ok().body(guard);
-        }).orElse(ResponseEntity.notFound().build());
+   @PutMapping(path = ID)
+    public ResponseEntity<AcessoModel> atualizar( @PathVariable Integer id ,@RequestBody AcessoModel model){
+        return acessoService.update(model,id);
     }
 }
