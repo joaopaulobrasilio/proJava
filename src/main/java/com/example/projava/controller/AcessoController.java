@@ -7,8 +7,6 @@ import com.example.projava.service.AcessoService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-
-
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -60,7 +58,7 @@ public class AcessoController {
 
     }
    @PutMapping(path = ID)
-    public ResponseEntity<AcessoModel> atualizar( @PathVariable Integer id ,@RequestBody AcessoModel model){
+    public ResponseEntity<AcessoModel> atualizar( @PathVariable Integer id, @RequestBody AcessoModel model){
         return acessoService.update(model,id);
     }
 }
