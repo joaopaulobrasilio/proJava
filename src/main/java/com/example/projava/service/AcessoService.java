@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.Calendar;
 import java.util.List;
 import java.util.Optional;
 
@@ -17,9 +18,8 @@ public class AcessoService {
     @Autowired
     AcessoRepository acessoRepository;
 
-
-
     public AcessoModel savar(AcessoModel acessoModel){
+        acessoModel.setDataRegistro(Calendar.getInstance());
         return  acessoRepository.save(acessoModel);
     }
 
@@ -39,6 +39,7 @@ public class AcessoService {
                 record ->  {
                     record.setLogin(model.getLogin());
                     record.setSenha(model.getSenha());
+                    record.setDescricao(model.getDescricao());
                     AcessoModel guard = acessoRepository.save(record);
                    return ResponseEntity.ok().body(guard);
                 }).orElseThrow( ()-> new AcessoNotFoundException());
