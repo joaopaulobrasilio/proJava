@@ -17,8 +17,7 @@ public class AcessoControllerAdvice {
     @ResponseBody
     @ExceptionHandler({AcessoNotFoundException.class})
     ResponseEntity<MessageExceptionHandler> acessoNotFound(AcessoNotFoundException acessoNotFoundException) {
-        MessageExceptionHandler error = new MessageExceptionHandler(
-                new Date(), HttpStatus.NOT_FOUND.value(), ACESSO_NAO_ENCONTRADO);
+        MessageExceptionHandler error = new MessageExceptionHandler(new Date(), HttpStatus.NOT_FOUND.value(), ACESSO_NAO_ENCONTRADO);
         return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
     }
 }

@@ -10,8 +10,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 
 @RestController
@@ -20,34 +18,30 @@ public class AcessoController {
     public static final String ID = "/{id}";
     @Autowired
     private AcessoService acessoService;
-    private final AcessoRepository acessoRepository;
+
 
     //Construct
-    public AcessoController(AcessoService acessoService,
-                            AcessoRepository acessoRepository) {
+    public AcessoController(AcessoService acessoService, AcessoRepository acessoRepository) {
 
         this.acessoService = acessoService;
-        this.acessoRepository = acessoRepository;
+
     }
 
-
     @PostMapping("/salvar")
-    public ResponseEntity<AcessoModel> create(@Valid @RequestBody AcessoModel acessoModel ) throws Exception{
-       AcessoModel newAcesso = acessoService.savar(acessoModel);
+    public ResponseEntity<AcessoModel> create(@Valid @RequestBody AcessoModel acessoModel) throws Exception {
+        AcessoModel newAcesso = acessoService.savar(acessoModel);
         return new ResponseEntity<>(newAcesso, HttpStatus.CREATED);
     }
 
     @GetMapping
     public List<AcessoModel> pegarTodos() {
-
         return acessoService.findAll();
     }
 
     @GetMapping(path = ID)
-    public ResponseEntity<AcessoModel> pegarPorId(@PathVariable Integer id ) {
-        return acessoService.findById(id).map(record ->
-                ResponseEntity.ok().body(record)).orElseThrow(
-                        ()-> new AcessoNotFoundException());
+    public ResponseEntity<AcessoModel> pegarPorId(@PathVariable Integer id) {
+        return acessoService.findById(id).map(record -> ResponseEntity.ok().body(record)).orElseThrow(
+                () -> new AcessoNotFoundException());
 
     }
 
@@ -56,11 +50,13 @@ public class AcessoController {
         acessoService.findById(id).map(record -> {
             acessoService.apagar(id);
             return ResponseEntity.ok().build();
-        }).orElseThrow(()-> new AcessoNotFoundException());
+        }).orElseThrow(() -> new AcessoNotFoundException());
 
     }
-   @PutMapping(path = ID)
-    public ResponseEntity<AcessoModel> atualizar( @PathVariable Integer id, @RequestBody AcessoModel model){
-        return acessoService.update(model,id);
+
+    @PutMapping(path = ID)
+    public ResponseEntity<AcessoModel> atualizar(@PathVariable Integer id, @RequestBody AcessoModel model) {
+        return acessoService.update(model, id);
     }
+
 }

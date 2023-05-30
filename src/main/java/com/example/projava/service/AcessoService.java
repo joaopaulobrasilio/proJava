@@ -2,9 +2,12 @@ package com.example.projava.service;
 
 import com.example.projava.exceptionhandler.AcessoNotFoundException;
 import com.example.projava.model.AcessoModel;
+import com.example.projava.model.UserModel;
 import com.example.projava.repository.AcessoRepository;
+import org.apache.catalina.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Calendar;
@@ -20,6 +23,9 @@ public class AcessoService {
 
     public AcessoModel savar(AcessoModel acessoModel){
         acessoModel.setDataRegistro(Calendar.getInstance());
+//        BCryptPasswordEncoder encriptarAcesso = new BCryptPasswordEncoder();
+//        String encript = encriptarAcesso.encode(acessoModel.getSenha());
+//        acessoModel.setSenha(encript);
         return  acessoRepository.save(acessoModel);
     }
 
@@ -44,5 +50,7 @@ public class AcessoService {
                    return ResponseEntity.ok().body(guard);
                 }).orElseThrow( ()-> new AcessoNotFoundException());
   }
+
+
 
 }
