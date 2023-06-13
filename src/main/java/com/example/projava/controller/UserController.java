@@ -1,22 +1,21 @@
 package com.example.projava.controller;
 
 
-import com.example.projava.exceptionhandler.AcessoNotFoundException;
-import com.example.projava.exceptionhandler.LoginControllerAdvice;
 import com.example.projava.exceptionhandler.LoginException;
-import com.example.projava.model.AcessoModel;
+import com.example.projava.model.Login;
 import com.example.projava.model.UserModel;
 import com.example.projava.repository.UserRepository;
+import com.example.projava.service.TokenService;
 import com.example.projava.service.UserService;
-import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.Optional;
 
 
 @Controller
@@ -25,11 +24,16 @@ public class UserController {
 
 
     @Autowired
+    private TokenService tokenService;
+
+   @Autowired
+   private AuthenticationManager authenticationManager;
+
+    @Autowired
     private UserService userService;
 
     @Autowired
     private UserRepository userRepository;
-
 
     @Autowired
     private PasswordEncoder encoder;
@@ -42,22 +46,13 @@ public class UserController {
       }
 
 
-    @GetMapping("/validarSenha")
-    public ResponseEntity<Boolean> validarSenha(@RequestParam String login,
-                                                @RequestParam String password) {
-
-        Optional<UserModel> optUsuario= userRepository.findByLogin(login);
-        if (optUsuario.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(false);
-        }
-
-        UserModel usuario = optUsuario.get();
-        boolean valid = encoder.matches(password, usuario.getPassword());
-
-                HttpStatus status = (valid) ? HttpStatus.OK : HttpStatus.UNAUTHORIZED;
-        return ResponseEntity.status(status).body(valid);
-
-    }
+//    @GetMapping("/validarSenha")
+//    public ResponseEntity<Boolean> validarSenha(@RequestParam String login,
+//                                                @RequestParam String password) {
+//          return  userService.validaSenha(login,password);
+//
+//
+//    }
 
 
    @GetMapping("/{id}")
@@ -66,5 +61,15 @@ public class UserController {
           ).orElseThrow(()-> new LoginException());
     }
 
+@PostMapping("/login")
+    public  String login(@RequestBody Login login){
+        UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken =
+                new UsernamePasswordAuthenticationToken(login.login(),login.password());
 
+        Authentication authentication =
+        this.authenticationManager.authenticate(usernamePasswordAuthenticationToken);
+        var usuario = (UserModel)  authentication.getPrincipal();
+
+        return tokenService.gerarToken(usuario);
+    }
 }

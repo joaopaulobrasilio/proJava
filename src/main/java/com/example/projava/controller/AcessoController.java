@@ -28,7 +28,7 @@ public class AcessoController {
     }
 
     @PostMapping("/salvar")
-    public ResponseEntity<AcessoModel> create(@Valid @RequestBody AcessoModel acessoModel) throws Exception {
+    public ResponseEntity<AcessoModel> create(@Valid @RequestParam AcessoModel acessoModel) throws Exception {
         AcessoModel newAcesso = acessoService.savar(acessoModel);
         return new ResponseEntity<>(newAcesso, HttpStatus.CREATED);
     }
