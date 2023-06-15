@@ -15,15 +15,23 @@ public class TokenService {
     public String gerarToken(UserModel userModel){
 
         return JWT.create()
-                .withIssuer("Acessos")
                 .withSubject(userModel.getLogin())
+                .withIssuer("Acessos")
                 .withClaim("id", userModel.getId())
                 .withExpiresAt(LocalDateTime.now()
-                        .plusMinutes(10).toInstant(ZoneOffset.of("-03:00"))).sign(
+                        //.plusMinutes(10)
+                        .plusSeconds(50)
+                        .toInstant(ZoneOffset.of("-03:00"))).sign(
                                 Algorithm.HMAC256("secret")
                 );
 
     }
+
+     public String getSubject(String token){
+        return JWT.require(Algorithm.HMAC256("secret"))
+                .withIssuer("Acessos")
+                .build().verify(token).getSubject();
+     }
 
 
 }

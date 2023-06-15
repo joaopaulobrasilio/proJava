@@ -6,7 +6,7 @@ import lombok.Data;
 
 @Data
 @Entity
-public class UserModel {
+public class UserModel  {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
@@ -23,3 +23,5 @@ public class UserModel {
 
 
 }
+
+

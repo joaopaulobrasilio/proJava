@@ -2,7 +2,7 @@ package com.example.projava.controller;
 
 
 import com.example.projava.exceptionhandler.LoginException;
-import com.example.projava.model.Login;
+import com.example.projava.model.LoginModel;
 import com.example.projava.model.UserModel;
 import com.example.projava.repository.UserRepository;
 import com.example.projava.service.TokenService;
@@ -11,14 +11,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 
-@Controller
+
+@RestController
 @RequestMapping("/users")
 public class UserController {
 
@@ -46,13 +45,19 @@ public class UserController {
       }
 
 
-//    @GetMapping("/validarSenha")
-//    public ResponseEntity<Boolean> validarSenha(@RequestParam String login,
-//                                                @RequestParam String password) {
-//          return  userService.validaSenha(login,password);
-//
-//
-//    }
+    @PostMapping("/validarSenha")
+    public ResponseEntity<String> validarSenha(@RequestBody LoginModel login) {
+
+          return  userService.validaSenha(login.getLogin(),login.getPassword());
+
+
+    }
+
+    @GetMapping
+    public List<UserModel>listarTodos(){
+          return userService.findUsersAll();
+    }
+
 
 
    @GetMapping("/{id}")
@@ -60,16 +65,16 @@ public class UserController {
           return userService.pegarPorId(id).map(record -> ResponseEntity.ok().body(record)
           ).orElseThrow(()-> new LoginException());
     }
-
-@PostMapping("/login")
-    public  String login(@RequestBody Login login){
-        UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken =
-                new UsernamePasswordAuthenticationToken(login.login(),login.password());
-
-        Authentication authentication =
-        this.authenticationManager.authenticate(usernamePasswordAuthenticationToken);
-        var usuario = (UserModel)  authentication.getPrincipal();
-
-        return tokenService.gerarToken(usuario);
-    }
+//
+//@PostMapping("/login")
+//    public  String login(@RequestBody Login login){
+//        UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken =
+//                new UsernamePasswordAuthenticationToken(login.login(),login.password());
+//
+//        Authentication authentication =
+//        this.authenticationManager.authenticate(usernamePasswordAuthenticationToken);
+//        var usuario = (UserModel)  authentication.getPrincipal();
+//
+//        return tokenService.gerarToken(usuario);
+//    }
 }

@@ -1,21 +1,14 @@
-package com.example.projava;
+package com.example.projava.model;
 
-import com.example.projava.model.UserModel;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.Optional;
 
-public class DetalheUsersData implements UserDetails {
+public class DetalheUserDetais  implements UserDetails {
 
-    public final Optional <UserModel> userModel;
-
-    public DetalheUsersData(Optional<UserModel> userModel) {
-        this.userModel = userModel;
-    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
