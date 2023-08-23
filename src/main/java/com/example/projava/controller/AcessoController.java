@@ -1,16 +1,19 @@
 package com.example.projava.controller;
 
+import com.example.projava.Utils.TokenUtils;
 import com.example.projava.exceptionhandler.AcessoNotFoundException;
 import com.example.projava.model.AcessoModel;
-import com.example.projava.repository.AcessoRepository;
 import com.example.projava.service.AcessoService;
+import com.example.projava.service.UserService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/acessos")
@@ -19,25 +22,29 @@ public class AcessoController {
     @Autowired
     private AcessoService acessoService;
 
-
+    @Autowired
+    private  UserService  userService;
     //Construct
-    public AcessoController(AcessoService acessoService, AcessoRepository acessoRepository) {
+    public AcessoController(AcessoService acessoService) {
 
         this.acessoService = acessoService;
 
     }
 
-    @PostMapping("/salvar")
-    public ResponseEntity<AcessoModel> create(@Valid @RequestParam AcessoModel acessoModel) throws Exception {
+   @RequestMapping(value = "/salvar", method = RequestMethod.POST)
+    public ResponseEntity<AcessoModel> create(@Valid @RequestBody  AcessoModel acessoModel, @RequestHeader Map<String,String> header) throws Exception {
+       TokenUtils.validarRole(header,"ADMIN");
         AcessoModel newAcesso = acessoService.savar(acessoModel);
+        System.out.println(newAcesso);
         return new ResponseEntity<>(newAcesso, HttpStatus.CREATED);
     }
 
-    @GetMapping
-    public List<AcessoModel> pegarTodos() {
+    //GET
+    @RequestMapping( method = RequestMethod.GET , produces = MediaType.APPLICATION_JSON_VALUE)
+    public List<AcessoModel> pegarTodos(@RequestHeader Map<String,String> header ) throws Exception {
+       TokenUtils.validarRole(header,"ADMIN");
         return acessoService.findAll();
     }
-
     @GetMapping(path = ID)
     public ResponseEntity<AcessoModel> pegarPorId(@PathVariable Integer id) {
         return acessoService.findById(id).map(record -> ResponseEntity.ok().body(record)).orElseThrow(
@@ -46,7 +53,8 @@ public class AcessoController {
     }
 
     @DeleteMapping(path = ID)
-    public void deletar(@PathVariable Integer id) {
+    public void deletar(@PathVariable Integer id ,@RequestHeader Map<String,String> header) throws Exception {
+        TokenUtils.validarRole(header,"ADMIN");
         acessoService.findById(id).map(record -> {
             acessoService.apagar(id);
             return ResponseEntity.ok().build();
