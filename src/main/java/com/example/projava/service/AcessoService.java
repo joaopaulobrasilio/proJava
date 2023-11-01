@@ -7,21 +7,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.util.Calendar;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 
 @Service
 public class AcessoService {
 
-
-
     @Autowired
     AcessoRepository acessoRepository;
 
+   Collection<AcessoModel> list = new ArrayList<>();
     public AcessoModel savar(AcessoModel acessoModel){
-
         acessoModel.setDataRegistro(Calendar.getInstance());
 
 //       ACHAR OUTRO METÓDOTO DE ENCRIPTAR
@@ -31,11 +27,10 @@ public class AcessoService {
         return  acessoRepository.save(acessoModel);
     }
 
-    public List<AcessoModel> findAll() throws  AcessoNotFoundException{
-
-        return acessoRepository.findAll();
-
+    public List<AcessoModel> findAll(Integer maxItem, Integer pagina) throws  AcessoNotFoundException {
+         return acessoRepository.findAllPage(maxItem,((pagina -1)* maxItem));
     }
+
 
    public Optional<AcessoModel> findById ( Integer id){
      return acessoRepository.findById(id);

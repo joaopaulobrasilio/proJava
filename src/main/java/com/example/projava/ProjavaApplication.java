@@ -10,6 +10,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 @SpringBootApplication
 @EnableAutoConfiguration
+
 public class ProjavaApplication {
 
 	public static void main(String[] args) {

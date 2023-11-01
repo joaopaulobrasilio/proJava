@@ -22,7 +22,6 @@ public class UserController {
     @PostMapping("/salvarUsuario")
     public ResponseEntity<UserModel>salvarUsuario(@RequestBody UserModel userModel, @RequestHeader Map<String,String> header) throws Exception {
         //Colocar validação do token
-
         UserModel newUser = userService.saveUsers(userModel);
        // TokenUtils.validar(header);
 

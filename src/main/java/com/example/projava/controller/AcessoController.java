@@ -19,6 +19,8 @@ import java.util.Map;
 @RequestMapping("/acessos")
 public class AcessoController {
     public static final String ID = "/{id}";
+
+
     @Autowired
     private AcessoService acessoService;
 
@@ -32,7 +34,7 @@ public class AcessoController {
     }
 
    @RequestMapping(value = "/salvar", method = RequestMethod.POST)
-    public ResponseEntity<AcessoModel> create(@Valid @RequestBody  AcessoModel acessoModel, @RequestHeader Map<String,String> header) throws Exception {
+    public ResponseEntity<AcessoModel> create(@Valid @RequestBody  AcessoModel acessoModel, @RequestHeader Map<String,String> header ) throws Exception {
        TokenUtils.validarRole(header,"ADMIN");
         AcessoModel newAcesso = acessoService.savar(acessoModel);
         System.out.println(newAcesso);
@@ -41,9 +43,9 @@ public class AcessoController {
 
     //GET
     @RequestMapping( method = RequestMethod.GET , produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<AcessoModel> pegarTodos(@RequestHeader Map<String,String> header ) throws Exception {
+    public List<AcessoModel> pegarTodos(@RequestHeader Map<String,String> header,@RequestParam Integer maxItem, @RequestParam Integer pagina) throws Exception {
        TokenUtils.validarRole(header,"ADMIN");
-        return acessoService.findAll();
+        return acessoService.findAll(maxItem,pagina);
     }
     @GetMapping(path = ID)
     public ResponseEntity<AcessoModel> pegarPorId(@PathVariable Integer id) {

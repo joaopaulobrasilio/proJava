@@ -22,7 +22,7 @@ import java.util.Optional;
 public class UserService {
 
     @Autowired
-    private  UserRepository userRepository;
+    private   UserRepository userRepository;
 
 
     BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
