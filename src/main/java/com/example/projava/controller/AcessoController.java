@@ -12,6 +12,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -41,11 +42,20 @@ public class AcessoController {
         return new ResponseEntity<>(newAcesso, HttpStatus.CREATED);
     }
 
+    @RequestMapping(value ="/totalAcessos" ,method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    public Map<String, Integer> pegarTotalDeDados(){
+       Integer total =  acessoService.findTotal();
+        HashMap<String,Integer> map = new HashMap<>();
+        map.put("totalDeDados",total);
+        return  map;
+    }
+
     //GET
     @RequestMapping( method = RequestMethod.GET , produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<AcessoModel> pegarTodos(@RequestHeader Map<String,String> header,@RequestParam Integer maxItem, @RequestParam Integer pagina) throws Exception {
+    public List<AcessoModel> pegarTodos(@RequestHeader Map<String,String> header, @RequestParam Integer pagina) throws Exception {
        TokenUtils.validarRole(header,"ADMIN");
-        return acessoService.findAll(maxItem,pagina);
+      System.out.println( acessoService.findTotal());
+        return acessoService.findAll(pagina);
     }
     @GetMapping(path = ID)
     public ResponseEntity<AcessoModel> pegarPorId(@PathVariable Integer id) {
@@ -65,8 +75,8 @@ public class AcessoController {
     }
 
     @PutMapping(path = ID)
-    public ResponseEntity<AcessoModel> atualizar(@PathVariable Integer id, @RequestBody AcessoModel model) {
-        return acessoService.update(model, id);
+    public ResponseEntity<AcessoModel> atualizar( @RequestBody AcessoModel model,@PathVariable Integer id ) {
+        return acessoService.update(model,id);
     }
 
 }

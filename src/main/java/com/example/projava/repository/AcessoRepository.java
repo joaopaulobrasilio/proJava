@@ -13,4 +13,9 @@ public interface AcessoRepository extends JpaRepository<AcessoModel, Integer > {
 
     @Query( value= "Select * from acesso_model order by id asc limit ?1 offset ?2",nativeQuery =true )
     List<AcessoModel> findAllPage(Integer maxItem, Integer offset);
+
+    @Query(value = "Select  count (id) from acesso_model",nativeQuery = true)
+    Integer findTotal();
+
+
 }

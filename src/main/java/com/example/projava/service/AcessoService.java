@@ -16,6 +16,8 @@ public class AcessoService {
     @Autowired
     AcessoRepository acessoRepository;
 
+    Integer maxItem = 5;
+
    Collection<AcessoModel> list = new ArrayList<>();
     public AcessoModel savar(AcessoModel acessoModel){
         acessoModel.setDataRegistro(Calendar.getInstance());
@@ -27,9 +29,14 @@ public class AcessoService {
         return  acessoRepository.save(acessoModel);
     }
 
-    public List<AcessoModel> findAll(Integer maxItem, Integer pagina) throws  AcessoNotFoundException {
-         return acessoRepository.findAllPage(maxItem,((pagina -1)* maxItem));
+    public List<AcessoModel> findAll(Integer pagina) throws  AcessoNotFoundException {
+
+        return  acessoRepository.findAllPage(maxItem,((pagina -1)* maxItem));
     }
+
+   public Integer findTotal(){
+        return acessoRepository.findTotal();
+   }
 
 
    public Optional<AcessoModel> findById ( Integer id){
@@ -39,7 +46,9 @@ public class AcessoService {
    public void apagar(Integer id){ acessoRepository.deleteById(id);
   }
 
-  public ResponseEntity<AcessoModel> update(AcessoModel model ,Integer id) {
+
+
+  public ResponseEntity<AcessoModel> update(AcessoModel model,Integer id ) {
         return acessoRepository.findById(id).map(
                 record ->  {
                     record.setLogin(model.getLogin());
@@ -49,7 +58,5 @@ public class AcessoService {
                    return ResponseEntity.ok().body(guard);
                 }).orElseThrow( ()-> new AcessoNotFoundException());
   }
-
-
 
 }
