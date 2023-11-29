@@ -52,10 +52,15 @@ public class AcessoController {
 
     //GET
     @RequestMapping( method = RequestMethod.GET , produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<AcessoModel> pegarTodos(@RequestHeader Map<String,String> header, @RequestParam Integer pagina) throws Exception {
-       TokenUtils.validarRole(header,"ADMIN");
-      System.out.println( acessoService.findTotal());
-        return acessoService.findAll(pagina);
+    public List<AcessoModel> pegarTodos(@RequestHeader Map<String,String> header, @RequestParam Integer pagina, @RequestParam Integer limitePorPagina)
+            throws Exception {
+        try {
+            TokenUtils.validarRole(header,"ADMIN");
+            return acessoService.findAll(pagina,limitePorPagina);
+        }catch (Exception ex){
+             throw new Exception(ex);
+        }
+
     }
     @GetMapping(path = ID)
     public ResponseEntity<AcessoModel> pegarPorId(@PathVariable Integer id) {

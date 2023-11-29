@@ -16,7 +16,7 @@ public class AcessoService {
     @Autowired
     AcessoRepository acessoRepository;
 
-    Integer maxItem = 5;
+
 
    Collection<AcessoModel> list = new ArrayList<>();
     public AcessoModel savar(AcessoModel acessoModel){
@@ -29,9 +29,9 @@ public class AcessoService {
         return  acessoRepository.save(acessoModel);
     }
 
-    public List<AcessoModel> findAll(Integer pagina) throws  AcessoNotFoundException {
-
-        return  acessoRepository.findAllPage(maxItem,((pagina -1)* maxItem));
+    public List<AcessoModel> findAll(Integer pagina, Integer limitePorPagina) throws  AcessoNotFoundException {
+          //return  acessoRepository.findAll();
+        return  acessoRepository.findAllPage(limitePorPagina,((pagina)* limitePorPagina));
     }
 
    public Integer findTotal(){
