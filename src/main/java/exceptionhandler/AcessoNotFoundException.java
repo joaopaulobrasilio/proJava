@@ -1,4 +1,4 @@
-package com.example.projava.exceptionhandler;
+package exceptionhandler;
 
 public class AcessoNotFoundException extends  RuntimeException{
 

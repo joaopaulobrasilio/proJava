@@ -16,6 +16,7 @@ public class ProjavaApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(ProjavaApplication.class, args);
 
+
 	}
 
 	@Bean

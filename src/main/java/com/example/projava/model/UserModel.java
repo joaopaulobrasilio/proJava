@@ -21,6 +21,10 @@ public class UserModel {
     private String nome;
     @NotNull
     private String login;
+
+    @NotNull
+    private String email;
+
     @NotNull
     private String password;
 
@@ -31,10 +35,11 @@ public class UserModel {
 
     }
 
-    public UserModel(Integer id, String nome, String login, String password,String roles) {
+    public UserModel(Integer id, String nome, String login,String email, String password,String roles) {
         this.id = id;
         this.nome = nome;
         this.login = login;
+        this.email = email;
         this.password = password;
         this.roles = roles;
     }

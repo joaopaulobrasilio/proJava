@@ -1,7 +1,7 @@
 package com.example.projava.controller;
 
 import com.example.projava.Utils.TokenUtils;
-import com.example.projava.exceptionhandler.AcessoNotFoundException;
+import exceptionhandler.AcessoNotFoundException;
 import com.example.projava.model.AcessoModel;
 import com.example.projava.service.AcessoService;
 import com.example.projava.service.UserService;

@@ -7,6 +7,7 @@ import lombok.Data;
 
 import java.util.Calendar;
 import java.util.Date;
+
 import static jakarta.persistence.TemporalType.*;
 
 
@@ -28,7 +29,8 @@ public class AcessoModel {
     @JsonFormat(pattern = "dd/MM/yyyy")
     private Calendar dataRegistro;
 
-    public AcessoModel(){}
+    public AcessoModel() {
+    }
 
     public AcessoModel(Integer id, String login, String senha, String descricao, Date dataRegistro) {
         this.id = id;
