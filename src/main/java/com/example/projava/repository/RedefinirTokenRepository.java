@@ -9,4 +9,7 @@ public interface RedefinirTokenRepository extends JpaRepository<TokenRedefinirSe
     @Query(value = "SELECT * FROM token_redefinir_senha WHERE token =:token",nativeQuery = true)
     public TokenRedefinirSenha verifyExpirationToken(String token);
 
+
+
+
 }

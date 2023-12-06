@@ -37,8 +37,6 @@ public class TokenUtils {
         ) {
             System.out.println("Expirou");
             throw new TokenExpirationException();
-        } else {
-            System.out.println("TOKEN VALIDO");
         }
 //      String[] dToken = new Strin
 //      g(Base64.getDecoder().decode(token)).split(":");

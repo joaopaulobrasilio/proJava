@@ -17,7 +17,7 @@ public class AcessoService {
     AcessoRepository acessoRepository;
 
     @Autowired
-    RedefinirTokenService redefinirTokenService;
+    RedefinirSenhaService redefinirTokenService;
 
     Collection<AcessoModel> list = new ArrayList<>();
 

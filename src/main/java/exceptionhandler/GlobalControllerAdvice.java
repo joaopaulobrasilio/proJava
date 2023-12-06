@@ -66,12 +66,15 @@ public class GlobalControllerAdvice {
 
     @ResponseBody
     @ExceptionHandler({UserForbiddenException.class})
-    ResponseEntity<MessageExceptionHandler> usuarioSemPermissao(UserForbiddenException userNotFoundException){
+    ResponseEntity<MessageExceptionHandler> usuarioSemPermissao(UserForbiddenException userForbiddenException){
         MessageExceptionHandler error = new MessageExceptionHandler(
                 new Date(), HttpStatus.FORBIDDEN.value(), "Usuário sem permissão");
         return  new ResponseEntity<>(error,HttpStatus.FORBIDDEN);
 
     }
+
+
+
 
 
 }

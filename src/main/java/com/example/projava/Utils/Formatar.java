@@ -1,11 +1,9 @@
 package com.example.projava.Utils;
 
 import com.example.projava.model.TokenRedefinirSenha;
-import com.fasterxml.jackson.annotation.JsonInclude;
 import org.springframework.stereotype.Component;
 
 @Component
-@JsonInclude(JsonInclude.Include.NON_NULL)
 public class Formatar {
 
 
