@@ -55,23 +55,27 @@ public class RedefinirSenhaService {
         return mailSender;
     }
 
-    public ResponseEntity<TokenRedefinirSenha> enviarEmailRecurecaoSenha(String email) {
+    public ResponseEntity<TokenRedefinirSenha> enviarEmailRecurecaoSenha(String email) throws Exception {
+           try {
+               UUID token = UUID.randomUUID();
+               String myToken = token.toString();
+               Optional<UserModel> resp = userRepository.findByEmail(email);
+               TokenRedefinirSenha dados = formatar.formatarDados(resp.get().getId(),
+                       myToken, System.currentTimeMillis());
+               repository.save(dados);
+               SimpleMailMessage message = new SimpleMailMessage();
+               message.setFrom(KEYGUARD);
+               message.setSubject(SENHA);
+               message.setText(dados.getToken());
+               message.setTo(email);
+               emailSender.send(message);
+               return ResponseEntity.ok().build();
+           }catch (Exception e){
+                   throw new Exception();
+           }
 
-            UUID token = UUID.randomUUID();
-            String myToken = token.toString();
-            Optional<UserModel> resp = userRepository.findByEmail(email);
-            TokenRedefinirSenha dados = formatar.formatarDados(resp.get().getId(),
-                    myToken, System.currentTimeMillis());
-            repository.save(dados);
-            SimpleMailMessage message = new SimpleMailMessage();
-            message.setFrom(KEYGUARD);
-            message.setSubject(SENHA);
-            message.setText(dados.getToken());
-            message.setTo(email);
-            emailSender.send(message);
-            return ResponseEntity.ok().build();
-        }
 
+    }
 
 
     public void validarToken(String token) {

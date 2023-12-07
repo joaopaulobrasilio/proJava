@@ -5,9 +5,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.ResponseBody;
 
-import java.util.Date;
+import java.time.Instant;
 
 
 
@@ -19,60 +18,82 @@ public class GlobalControllerAdvice {
     public static final String TOKEN_EXPIROU_FAÇA_O_LOGIN_NOVAMENTE = "TOKEN EXPIROU FAÇA O LOGIN NOVAMENTE";
     public static final String USUARIO_JA_EXISTENTE = "USUARIO JA EXISTENTE";
 
-    @ResponseBody
-    @ExceptionHandler({LoginException.class})
-    ResponseEntity<MessageExceptionHandler> loginJaExistente(LoginException loginBadRequestException){
-        MessageExceptionHandler error = new MessageExceptionHandler(
-                new Date(), HttpStatus.BAD_REQUEST.value(), LOGIN_INEXISTENTE);
-        return  new ResponseEntity<>(error,HttpStatus.BAD_REQUEST);
 
+
+
+    private ResponseEntity<StandardError> standardErrorResponseEntity(String error, HttpStatus status, Exception e){
+        StandardError standardError = new StandardError(Instant.now(),status.value(),error, e.getMessage());
+        return ResponseEntity.status(status).body(standardError);
+    }
+    @ExceptionHandler(ErrorAoEnviarEmailException.class)
+    ResponseEntity<StandardError> errorEmailException(ErrorAoEnviarEmailException e){
+        return this.standardErrorResponseEntity("Erro ao enviar email",HttpStatus.BAD_REQUEST, e);
+    }
+
+    @ExceptionHandler(Exception.class)
+    ResponseEntity<StandardError> exception(Exception e){
+        return this.standardErrorResponseEntity("Erro ao enviar email",HttpStatus.BAD_REQUEST, e);
     }
 
 
-    @ResponseBody
-    @ExceptionHandler({AcessoNotFoundException.class})
-    ResponseEntity<MessageExceptionHandler> acessoNotFound(AcessoNotFoundException acessoNotFoundException) {
-        MessageExceptionHandler error = new MessageExceptionHandler(new Date(), HttpStatus.NOT_FOUND.value(),
-                ACESSO_INEXISTENTE);
-        return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
-    }
 
 
-    @ResponseBody
-    @ExceptionHandler({TokenExpirationException.class})
-    ResponseEntity<MessageExceptionHandler> tokenExpiration(TokenExpirationException tokenExpirationException) {
-        MessageExceptionHandler error = new MessageExceptionHandler(new Date(), HttpStatus.UNAUTHORIZED.value(), TOKEN_EXPIROU_FAÇA_O_LOGIN_NOVAMENTE);
-        return new ResponseEntity<>(error, HttpStatus.UNAUTHORIZED);
-    }
 
-
-    @ResponseBody
-    @ExceptionHandler({UserBadRequestException.class})
-    ResponseEntity<MessageExceptionHandler> usuarioExistente(UserBadRequestException userBadRequestException){
-        MessageExceptionHandler error = new MessageExceptionHandler(
-                new Date(), HttpStatus.BAD_REQUEST.value(), USUARIO_JA_EXISTENTE);
-        return  new ResponseEntity<>(error,HttpStatus.BAD_REQUEST);
-
-    }
-
-    @ResponseBody
-    @ExceptionHandler({UserNotFoundException.class})
-    ResponseEntity<MessageExceptionHandler> usuarioNaoEncontrado(UserNotFoundException userNotFoundException){
-        MessageExceptionHandler error = new MessageExceptionHandler(
-                new Date(), HttpStatus.NOT_FOUND.value(), "Usuário não encontrado");
-        return  new ResponseEntity<>(error,HttpStatus.NOT_FOUND);
-
-    }
-
-    @ResponseBody
-    @ExceptionHandler({UserForbiddenException.class})
-    ResponseEntity<MessageExceptionHandler> usuarioSemPermissao(UserForbiddenException userForbiddenException){
-        MessageExceptionHandler error = new MessageExceptionHandler(
-                new Date(), HttpStatus.FORBIDDEN.value(), "Usuário sem permissão");
-        return  new ResponseEntity<>(error,HttpStatus.FORBIDDEN);
-
-    }
-
+//   @ExceptionHandler({LoginException.class})
+//    ResponseEntity<StandardError> loginJaExistente(LoginException loginBadRequestException){
+//        StandardError error = new StandardError(
+//                new Date(), HttpStatus.BAD_REQUEST.value(), LOGIN_INEXISTENTE);
+//        return  new ResponseEntity<>(error,HttpStatus.BAD_REQUEST);
+//
+//    }
+//
+//
+//
+//    @ExceptionHandler({AcessoNotFoundException.class})
+//    ResponseEntity<StandardError> acessoNotFound(AcessoNotFoundException acessoNotFoundException) {
+//        StandardError error = new StandardError(new Date(), HttpStatus.NOT_FOUND.value(),
+//                ACESSO_INEXISTENTE);
+//        return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
+//    }
+//
+//
+//
+//    @ExceptionHandler({TokenExpirationException.class})
+//    ResponseEntity<StandardError> tokenExpiration(TokenExpirationException tokenExpirationException) {
+//        StandardError error = new StandardError(new Date(), HttpStatus.UNAUTHORIZED.value(), TOKEN_EXPIROU_FAÇA_O_LOGIN_NOVAMENTE);
+//        return new ResponseEntity<>(error, HttpStatus.UNAUTHORIZED);
+//    }
+//
+//
+//
+//    @ExceptionHandler({UserBadRequestException.class})
+//    ResponseEntity<StandardError> usuarioExistente(UserBadRequestException userBadRequestException){
+//        StandardError error = new StandardError(
+//                new Date(), HttpStatus.BAD_REQUEST.value(), USUARIO_JA_EXISTENTE);
+//        return  new ResponseEntity<>(error,HttpStatus.BAD_REQUEST);
+//
+//    }
+//
+//
+//    @ExceptionHandler({UserNotFoundException.class})
+//    ResponseEntity<StandardError> usuarioNaoEncontrado(UserNotFoundException userNotFoundException){
+//        StandardError error = new StandardError(
+//                new Date(), HttpStatus.NOT_FOUND.value(), "Usuário não encontrado");
+//        return  new ResponseEntity<>(error,HttpStatus.NOT_FOUND);
+//
+//    }
+//
+//
+//    @ExceptionHandler({UserForbiddenException.class})
+//    ResponseEntity<StandardError> usuarioSemPermissao(UserForbiddenException userForbiddenException){
+//        StandardError error = new StandardError(
+//                new Date(), HttpStatus.FORBIDDEN.value(), "Usuário sem permissão");
+//        return  new ResponseEntity<>(error,HttpStatus.FORBIDDEN);
+//
+//    }
+//
+//
+//
 
 
 
