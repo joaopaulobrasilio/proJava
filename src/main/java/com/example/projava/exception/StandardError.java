@@ -1,4 +1,4 @@
-package exceptionhandler;
+package com.example.projava.exception;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 
@@ -11,17 +11,14 @@ public class StandardError implements Serializable {
     private Instant timestamp;
     private Integer status;
     private String error;
-    private String message;
-    private String path;
 
-
-    public StandardError(Instant timestamp, Integer status, String error, String message) {
+    public StandardError(Instant timestamp, Integer status, String error) {
         this.timestamp = timestamp;
         this.status = status;
         this.error = error;
-        this.message = message;
 
     }
+
 
     public Instant getTimestamp() {
         return timestamp;
@@ -47,19 +44,5 @@ public class StandardError implements Serializable {
         this.error = error;
     }
 
-    public String getMessage() {
-        return message;
-    }
 
-    public void setMessage(String message) {
-        this.message = message;
-    }
-
-    public String getPath() {
-        return path;
-    }
-
-    public void setPath(String path) {
-        this.path = path;
-    }
 }

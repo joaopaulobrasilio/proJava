@@ -1,6 +1,6 @@
 package com.example.projava.service;
 
-import exceptionhandler.AcessoNotFoundException;
+import com.example.projava.exception.AcessoNotFoundException;
 import com.example.projava.model.AcessoModel;
 import com.example.projava.repository.AcessoRepository;
 import org.springframework.beans.factory.annotation.Autowired;

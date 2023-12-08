@@ -1,7 +1,7 @@
 package com.example.projava.Utils;
 
-import exceptionhandler.TokenExpirationException;
-import exceptionhandler.UserForbiddenException;
+import com.example.projava.exception.TokenExpirationException;
+import com.example.projava.exception.UserForbiddenException;
 import com.example.projava.model.JWT;
 import com.example.projava.model.UserModel;
 import com.fasterxml.jackson.core.JsonProcessingException;

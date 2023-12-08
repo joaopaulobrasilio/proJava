@@ -2,11 +2,12 @@ package com.example.projava.service;
 
 
 import com.example.projava.Utils.Formatar;
+import com.example.projava.exception.ErrorAoEnviarEmailException;
+import com.example.projava.exception.TokenExpirationException;
 import com.example.projava.model.TokenRedefinirSenha;
 import com.example.projava.model.UserModel;
 import com.example.projava.repository.RedefinirTokenRepository;
 import com.example.projava.repository.UserRepository;
-import exceptionhandler.TokenExpirationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.ResponseEntity;
@@ -56,23 +57,23 @@ public class RedefinirSenhaService {
     }
 
     public ResponseEntity<TokenRedefinirSenha> enviarEmailRecurecaoSenha(String email) throws Exception {
-           try {
-               UUID token = UUID.randomUUID();
-               String myToken = token.toString();
-               Optional<UserModel> resp = userRepository.findByEmail(email);
-               TokenRedefinirSenha dados = formatar.formatarDados(resp.get().getId(),
-                       myToken, System.currentTimeMillis());
-               repository.save(dados);
-               SimpleMailMessage message = new SimpleMailMessage();
-               message.setFrom(KEYGUARD);
-               message.setSubject(SENHA);
-               message.setText(dados.getToken());
-               message.setTo(email);
-               emailSender.send(message);
-               return ResponseEntity.ok().build();
-           }catch (Exception e){
-                   throw new Exception();
-           }
+        try {
+            UUID token = UUID.randomUUID();
+            String myToken = token.toString();
+            Optional<UserModel> resp = userRepository.findByEmail(email);
+            TokenRedefinirSenha dados = formatar.formatarDados(resp.get().getId(),
+                    myToken, System.currentTimeMillis());
+            repository.save(dados);
+            SimpleMailMessage message = new SimpleMailMessage();
+            message.setFrom(KEYGUARD);
+            message.setSubject(SENHA);
+            message.setText(dados.getToken());
+            message.setTo(email);
+            emailSender.send(message);
+            return ResponseEntity.ok().build();
+        } catch (Exception e) {
+            throw new ErrorAoEnviarEmailException();
+        }
 
 
     }

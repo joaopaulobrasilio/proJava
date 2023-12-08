@@ -2,7 +2,7 @@ package com.example.projava.service;
 
 
 import com.example.projava.Utils.TokenUtils;
-import exceptionhandler.UserNotFoundException;
+import com.example.projava.exception.UserNotFoundException;
 import com.example.projava.model.LoginModel;
 import com.example.projava.model.UserModel;
 import com.example.projava.repository.UserRepository;

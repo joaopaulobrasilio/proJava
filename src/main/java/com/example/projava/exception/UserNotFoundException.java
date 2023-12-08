@@ -1,4 +1,4 @@
-package exceptionhandler;
+package com.example.projava.exception;
 
 public class UserNotFoundException extends  RuntimeException{
 
