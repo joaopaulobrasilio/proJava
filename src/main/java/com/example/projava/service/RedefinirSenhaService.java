@@ -2,8 +2,8 @@ package com.example.projava.service;
 
 
 import com.example.projava.Utils.Formatar;
-import com.example.projava.exception.ErrorAoEnviarEmailException;
 import com.example.projava.exception.TokenExpirationException;
+import com.example.projava.model.RedefinirSenhaModel;
 import com.example.projava.model.TokenRedefinirSenha;
 import com.example.projava.model.UserModel;
 import com.example.projava.repository.RedefinirTokenRepository;
@@ -11,11 +11,13 @@ import com.example.projava.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.ResponseEntity;
-import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 
+import javax.mail.internet.MimeMessage;
+import java.io.InputStream;
 import java.util.Optional;
 import java.util.Properties;
 import java.util.UUID;
@@ -26,6 +28,7 @@ public class RedefinirSenhaService {
 
     public static final String KEYGUARD = "keyguard@mailtrix.com.br";
     public static final String SENHA = "Redefinir Senha";
+
     @Autowired
     private RedefinirTokenRepository repository;
 
@@ -56,27 +59,43 @@ public class RedefinirSenhaService {
         return mailSender;
     }
 
-    public ResponseEntity<TokenRedefinirSenha> enviarEmailRecurecaoSenha(String email) throws Exception {
+    public ResponseEntity<TokenRedefinirSenha> enviarEmailRecurecaoSenha(RedefinirSenhaModel email) throws Exception {
+         InputStream sle = getClass().getClassLoader().getResourceAsStream("resetpassword/index.html");
+          sle.read();
+         String buffer = new String(sle.readAllBytes());
+
+
         try {
             UUID token = UUID.randomUUID();
             String myToken = token.toString();
-            Optional<UserModel> resp = userRepository.findByEmail(email);
+            Optional<UserModel> resp = userRepository.findByEmail(email.getEmail());
             TokenRedefinirSenha dados = formatar.formatarDados(resp.get().getId(),
                     myToken, System.currentTimeMillis());
             repository.save(dados);
-            SimpleMailMessage message = new SimpleMailMessage();
-            message.setFrom(KEYGUARD);
-            message.setSubject(SENHA);
-            message.setText(dados.getToken());
-            message.setTo(email);
-            emailSender.send(message);
+            MimeMessage mimeMessage = emailSender.createMimeMessage();
+            MimeMessageHelper helper = new MimeMessageHelper(mimeMessage," UTF-8");
+            String msg = buffer.replace("$TOKEN$",dados.getToken());
+            helper.setFrom(KEYGUARD);
+            helper.setSubject(SENHA);
+            helper.setText(msg,true);
+            helper.setTo(email.getEmail());
+            emailSender.send(helper.getMimeMessage());
+
+//            SimpleMailMessage message = new SimpleMailMessage();
+//            message.setFrom(KEYGUARD);
+//            message.setSubject(SENHA);
+//            message.setText(buffer.replace("$TOKEN$",dados.getToken()));
+//            message.setTo(email.getEmail());
+//            emailSender.send(message);
             return ResponseEntity.ok().build();
         } catch (Exception e) {
-            throw new ErrorAoEnviarEmailException();
+            throw new Exception();
         }
 
 
     }
+
+
 
 
     public void validarToken(String token) {
