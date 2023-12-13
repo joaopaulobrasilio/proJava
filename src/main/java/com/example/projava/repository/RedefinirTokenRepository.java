@@ -7,7 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 public interface RedefinirTokenRepository extends JpaRepository<TokenRedefinirSenha,Integer> {
 
     @Query(value = "SELECT * FROM token_redefinir_senha WHERE token =:token",nativeQuery = true)
-    public TokenRedefinirSenha verifyExpirationToken(String token);
+    public TokenRedefinirSenha getByToken(String token);
 
 
 

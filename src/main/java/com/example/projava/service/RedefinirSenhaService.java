@@ -14,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.mail.internet.MimeMessage;
@@ -60,9 +61,9 @@ public class RedefinirSenhaService {
     }
 
     public ResponseEntity<TokenRedefinirSenha> enviarEmailRecurecaoSenha(RedefinirSenhaModel email) throws Exception {
-         InputStream sle = getClass().getClassLoader().getResourceAsStream("resetpassword/index.html");
-          sle.read();
-         String buffer = new String(sle.readAllBytes());
+        InputStream sle = getClass().getClassLoader().getResourceAsStream("resetpassword/index.html");
+        sle.read();
+        String buffer = new String(sle.readAllBytes());
 
 
         try {
@@ -73,39 +74,51 @@ public class RedefinirSenhaService {
                     myToken, System.currentTimeMillis());
             repository.save(dados);
             MimeMessage mimeMessage = emailSender.createMimeMessage();
-            MimeMessageHelper helper = new MimeMessageHelper(mimeMessage," UTF-8");
-            String msg = buffer.replace("$TOKEN$",dados.getToken());
-            helper.setFrom(KEYGUARD);
-            helper.setSubject(SENHA);
-            helper.setText(msg,true);
-            helper.setTo(email.getEmail());
-            emailSender.send(helper.getMimeMessage());
+            MimeMessageHelper message = new MimeMessageHelper(mimeMessage, " UTF-8");
+            String msg = buffer.replace("$TOKEN$", dados.getToken());
+            message.setFrom(KEYGUARD);
+            message.setSubject(SENHA);
+            message.setText(msg, true);
+            message.setTo(email.getEmail());
+            emailSender.send(message.getMimeMessage());
 
-//            SimpleMailMessage message = new SimpleMailMessage();
-//            message.setFrom(KEYGUARD);
-//            message.setSubject(SENHA);
-//            message.setText(buffer.replace("$TOKEN$",dados.getToken()));
-//            message.setTo(email.getEmail());
-//            emailSender.send(message);
+
             return ResponseEntity.ok().build();
         } catch (Exception e) {
-            throw new Exception();
-        }
-
-
-    }
-
-
-
-
-    public void validarToken(String token) {
-        TokenRedefinirSenha otk = repository.verifyExpirationToken(token);
-        if (System.currentTimeMillis() - otk.getTimestamp() >= 60000) {
             throw new TokenExpirationException();
         }
 
+
     }
+
+
+    public String validarToken(String token) {
+        TokenRedefinirSenha otk = repository.getByToken(token);
+        if (System.currentTimeMillis() - otk.getTimestamp() >= 6000000) {
+            throw new TokenExpirationException();
+
+        }
+
+        return token;
+    }
+
+
+    public void salvarNovaSenha(String token, String password) throws Exception {
+        TokenRedefinirSenha otoken = repository.getByToken(token);
+        Optional<UserModel> user = userRepository.findById(otoken.getId_user());
+        validarToken(otoken.getToken());
+        if (otoken.getId_user().equals(user.get().getId())) {
+            BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+            String senha = encoder.encode(password);
+            user.get().setPassword(senha);
+            userRepository.save(user.get());
+        }
+
+    }
+
 }
+
+
 
 
 

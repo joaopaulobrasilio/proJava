@@ -8,10 +8,14 @@ import org.springframework.stereotype.Repository;
 import java.util.Optional;
 @Repository
 public interface UserRepository extends JpaRepository<UserModel,Integer> {
-    public Optional<UserModel> findByLogin(String login);
+     Optional<UserModel> findByLogin(String login);
 
     @Query(value = "SELECT * FROM user_model WHERE email =:email ",nativeQuery = true)
-    public Optional<UserModel> findByEmail(String email);
+      Optional<UserModel> findByEmail(String email);
+
+
+    @Query(value = "UPDATE  user_model set password =:password WHERE  id =:id",nativeQuery = true)
+     Optional<Long> atualizarSenha(String password,Integer id);
 
 
 }

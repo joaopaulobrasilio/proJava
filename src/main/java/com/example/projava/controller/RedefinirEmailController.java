@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 public class RedefinirEmailController {
 
-
     @Autowired
     RedefinirSenhaService redefinirTokenService;
 
@@ -23,10 +22,15 @@ public class RedefinirEmailController {
 
 
     @RequestMapping(value = "/validar",method = RequestMethod.POST)
-    public void validaToken(@RequestParam String token){
+    public void validaToken(@RequestBody String token){
         redefinirTokenService.validarToken(token);
 
     }
 
+    @RequestMapping(value = "/novasenha",method = RequestMethod.POST)
+    public void testaSalvarNovaSenha(@RequestParam String token, @RequestParam String password ) throws Exception {
+       redefinirTokenService.salvarNovaSenha(token, password);
+
+    }
 
 }
