@@ -2,6 +2,7 @@ package com.example.projava.service;
 
 import com.example.projava.Utils.Formatar;
 import com.example.projava.exception.TokenExpirationException;
+import com.example.projava.model.NovaSenha;
 import com.example.projava.model.RedefinirSenhaModel;
 import com.example.projava.model.TokenRedefinirSenha;
 import com.example.projava.model.UserModel;
@@ -12,7 +13,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
-import org.springframework.mail.javamail.MimeMessageHelper;     
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -63,8 +64,6 @@ public class RedefinirSenhaService {
         InputStream sle = getClass().getClassLoader().getResourceAsStream("resetpassword/index.html");
         sle.read();
         String buffer = new String(sle.readAllBytes());
-
-
         try {
             UUID token = UUID.randomUUID();
             String myToken = token.toString();
@@ -80,8 +79,6 @@ public class RedefinirSenhaService {
             message.setText(msg, true);
             message.setTo(email.getEmail());
             emailSender.send(message.getMimeMessage());
-
-
             return ResponseEntity.ok().build();
         } catch (Exception e) {
             throw new TokenExpirationException();
@@ -93,7 +90,7 @@ public class RedefinirSenhaService {
 
     public String validarToken(String token) {
         TokenRedefinirSenha otk = repository.getByToken(token);
-        if (System.currentTimeMillis() - otk.getTimestamp() >= 600000000) {
+        if (System.currentTimeMillis() - otk.getTimestamp() >= 300000) {
             throw new TokenExpirationException();
 
         }
@@ -102,23 +99,21 @@ public class RedefinirSenhaService {
     }
 
 
-    public void salvarNovaSenha(String token, String password) {
+    public void salvarNovaSenha( NovaSenha novaSenha) throws Exception {
         try {
-            TokenRedefinirSenha otoken = repository.getByToken(token);
+            TokenRedefinirSenha otoken = repository.getByToken(novaSenha.getToken());
             validarToken(otoken.getToken());
             Optional<UserModel> user = userRepository.findById(otoken.getId_user());
                 BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
-                String senha = encoder.encode(password);
+                String senha = encoder.encode(novaSenha.getPassword());
                 user.get().setPassword(senha);
-                userRepository.save(user.get());
+              userRepository.save(user.get());
             
         }catch (Exception e){
-            throw  new TokenExpirationException();
+            throw  new Exception();
         }
 
-
     }
-
 }
 
 
