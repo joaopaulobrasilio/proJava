@@ -35,7 +35,7 @@ public class UserController {
     @PostMapping("/logar")
     public ResponseEntity<RespToken> logar(@RequestBody LoginModel login) throws Exception {
     RespToken  respToken = new RespToken();
-    respToken.setToken( userService.fazerlogin(login));
+    respToken.setToken( userService.fazerLogin(login.getLogin(),login.getPassword()));
         return ResponseEntity.ok(respToken);
     }
     @PostMapping("/validar")

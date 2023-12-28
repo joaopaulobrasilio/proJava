@@ -27,7 +27,7 @@ public class UserService {
 
     BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
 
-
+   private  TokenUtils tokenUtils;
 
     public UserModel saveUsers(UserModel userModel){
         BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
@@ -37,16 +37,28 @@ public class UserService {
 
     }
 
-    public String fazerlogin(LoginModel login) throws Exception {
-      Optional<UserModel> model =  userRepository.findByLogin(login.getLogin());
+    public String fazerLogin(String login, String password) throws Exception {
+
+       UserModel userAuth = this.autenticate(login,password);
+        if(userAuth != null){
+        String jwtToken= tokenUtils.gerarToken(userAuth);
+        return  jwtToken;
+        }
+        else {
+            throw new Exception();
+        }
+    }
+
+    public UserModel autenticate(String login ,String password) throws Exception {
+      Optional<UserModel> model =  userRepository.findByLogin(login);
       if(model.isEmpty()){
           throw new UserNotFoundException(HttpStatus.NOT_FOUND.toString());
       }
-      if(!BCrypt.checkpw(login.getPassword(),model.get().getPassword())){
+      if(!BCrypt.checkpw(password,model.get().getPassword())){
           throw new UserNotFoundException(HttpStatus.FORBIDDEN.toString());
       }
         //return new String(Base64.getEncoder().encode(login.concat(":").concat(password).getBytes()));
-         return  new TokenUtils().gerarToken(model.get(),model.get().getRoles());
+         return UserModel.builder().build();
 
     }
     public ResponseEntity<String> validarAutenticacaoUsers(Map<String,String> token) throws Exception {
