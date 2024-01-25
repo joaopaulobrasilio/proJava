@@ -38,6 +38,7 @@ public class RedefinirSenhaService {
 
     @Autowired
     private JavaMailSender emailSender;
+
     @Autowired
     Formatar formatar;
 

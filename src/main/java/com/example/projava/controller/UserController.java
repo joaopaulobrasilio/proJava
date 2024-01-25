@@ -1,5 +1,6 @@
 package com.example.projava.controller;
 
+import com.example.projava.Utils.TokenUtils;
 import com.example.projava.model.LoginModel;
 import com.example.projava.model.RespToken;
 import com.example.projava.model.UserModel;
@@ -18,6 +19,8 @@ public class UserController {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private  TokenUtils tokenUtilService;
 
     @PostMapping("/salvarUsuario")
     public ResponseEntity<UserModel>salvarUsuario(@RequestBody UserModel userModel, @RequestHeader Map<String,String> header) throws Exception {
@@ -39,7 +42,8 @@ public class UserController {
         return ResponseEntity.ok(respToken);
     }
     @PostMapping("/validar")
-    public ResponseEntity<String> validarAcesso(@RequestHeader Map<String,String> header) throws Exception {
-      return   userService.validarAutenticacaoUsers(header);
+    public ResponseEntity<Boolean> validarAcesso(@RequestHeader String token) throws Exception {
+       Boolean ret = tokenUtilService.validarToken(token);
+         return ResponseEntity.ok().body(ret);
     }
 }

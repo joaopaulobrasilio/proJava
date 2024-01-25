@@ -28,19 +28,18 @@ public class UserModel {
     @NotNull
     private String password;
 
-    @NotNull
-    private String roles;
+
 
     public UserModel() {
 
     }
 
-    public UserModel(Integer id, String nome, String login,String email, String password,String roles) {
+    public UserModel(Integer id, String nome, String login,String email, String password) {
         this.id = id;
         this.nome = nome;
         this.login = login;
         this.email = email;
         this.password = password;
-        this.roles = roles;
+
     }
 }

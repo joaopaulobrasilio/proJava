@@ -27,6 +27,9 @@ public class AcessoController {
 
     @Autowired
     private  UserService  userService;
+
+    @Autowired
+    private  TokenUtils tokenUtils;
     //Construct
     public AcessoController(AcessoService acessoService) {
 
@@ -36,7 +39,7 @@ public class AcessoController {
 
    @RequestMapping(value = "/salvar", method = RequestMethod.POST)
     public ResponseEntity<AcessoModel> create(@Valid @RequestBody  AcessoModel acessoModel, @RequestHeader Map<String,String> header ) throws Exception {
-       TokenUtils.validarRole(header,"ADMIN");
+     //  TokenUtils.validarRole(header,"ADMIN");
         AcessoModel newAcesso = acessoService.savar(acessoModel);
         System.out.println(newAcesso);
         return new ResponseEntity<>(newAcesso, HttpStatus.CREATED);
@@ -55,7 +58,8 @@ public class AcessoController {
     public List<AcessoModel> pegarTodos(@RequestHeader Map<String,String> header, @RequestParam Integer pagina, @RequestParam Integer limitePorPagina)
             throws Exception {
         try {
-            TokenUtils.validarRole(header,"ADMIN");
+            tokenUtils.validarToken(header);
+
             return acessoService.findAll(pagina,limitePorPagina);
         }catch (Exception ex){
              throw new Exception(ex);
@@ -71,7 +75,7 @@ public class AcessoController {
 
     @DeleteMapping(path = ID)
     public void deletar(@PathVariable Integer id ,@RequestHeader Map<String,String> header) throws Exception {
-        TokenUtils.validarRole(header,"ADMIN");
+     //   TokenUtils.validarRole(header,"ADMIN");
         acessoService.findById(id).map(record -> {
             acessoService.apagar(id);
             return ResponseEntity.ok().build();

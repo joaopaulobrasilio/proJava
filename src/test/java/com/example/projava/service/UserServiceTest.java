@@ -26,7 +26,7 @@ public class UserServiceTest {
 
     @BeforeEach
      public void setUp(){
-     user = new UserModel(1,"joaopaulo", "joaoP","joao@gmail.com","batatinha123","user");
+     user = new UserModel(1,"joaopaulo", "joaoP","joao@gmail.com","batatinha123");
     }
      @Test
      void quando_consultar_login_para_acesso_deve_retornar_um_user(){
